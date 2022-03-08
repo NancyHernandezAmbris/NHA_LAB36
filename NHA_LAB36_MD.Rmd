@@ -1,0 +1,116 @@
+---
+title: "NHA_LAB36"
+author: "Nancy Hernández Ambris"
+date: "8/3/2022"
+output:
+  html_document:
+    df_print: paged
+  pdf_document: default
+---
+Laboratorio - MAPA DE CALOR -TÉRMICO- with pheatmap
+DATOS GENETICOS TOMADOS DE Sahir Bhatnagar.PRACTICA DE CODERS
+
+Objetivo: Realizar un heatmap con datos geneticos  -------------------------------------------------------------------------------------
+En este ejercicio vamos a:
+1. Cargar nuestra matriz hipotética de datos y dataframes adicionales
+2. Realizar varios heatmaps
+
+Un mapa de calor es una representación gráfica de datos que utiliza un sistema de codificación de colores para representar diferentes valores
+
+
+Heatmaps with pheatmap 
+Simulated data created by Sahir Bhatnagar.
+
+install.packages("pheatmap")
+```{r}
+library(pheatmap)
+```
+
+importar datos
+```{r}
+file.choose()
+genes <- as.matrix(read.csv("C:\\Users\\Nancy\\Desktop\\Doctorado\\Asignaturas\\Complejidad económica\\Labs\\LAB36\\heatmap_data.csv",
+                            sep = ",",
+                            header = T,
+                            row.names = 1))
+```
+
+```{r}
+annotation_col <- read.csv("C:\\Users\\Nancy\\Desktop\\Doctorado\\Asignaturas\\Complejidad económica\\Labs\\LAB36\\annotation_col.csv",
+                           row.names = 1)
+```
+
+```{r}
+annotation_row <- read.csv("C:\\Users\\Nancy\\Desktop\\Doctorado\\Asignaturas\\Complejidad económica\\Labs\\LAB36\\annotation_row.csv",
+                           row.names = 1)
+```
+
+Plotting with pheatmap!
+```{r}
+pheatmap(genes)
+```
+change font
+```{r}
+pheatmap(genes, frontsize = 6)
+```
+default is clustering rows and columns
+cluster by gene - groups of similar genes----LOS GENES ESTAN EN LOS RENGLONES
+
+POR DEFAULT CLUSTEA LOS RENGLONES
+```{r}
+pheatmap(genes, frontsize = 6, cluster_rows = T, cluster_cols = F)
+
+```
+
+cluster by patient - groups of similar patients 
+DEBES HACER QUE LAS COLUMNAS SE TRANFOMEN A RENGLONES
+```{r}
+pheatmap(genes, frontsize = 6, cluster_rows = F, cluster_cols = T)
+```
+usually order by both
+```{r}
+pheatmap(genes, frontsize = 6, cluster_rows = T, cluster_cols = T)
+```
+seeing some patterns emerge - but what do they mean? Great time to add annotation to our plot
+```{r}
+pheatmap(genes, frontsize = 6, cluster_rows = T, cluster_cols = T,annotation_row = annotation_row)
+```
+add to row first, see that genes are clustering according to the pathways they belong to
+```{r}
+pheatmap(genes, frontsize = 6, cluster_rows = T, cluster_cols = T,annotation_row = annotation_row, annotation_col = annotation_col)
+```
+now have information about the drug and condition 
+
+GRAFICO COMPLETO G1
+```{r}
+pheatmap(genes, frontsize = 6, cluster_rows = T, cluster_cols = T,annotation_row = annotation_row, annotation_col = annotation_col, treeheight_row = 0,treeheight_col = 0, main = "expresion genetica")
+```
+GRAFICO QUITANDO CLUSTERS (ARBOLES DE AGRUPACIÓN-DENDOGRAMAS)
+take a smaller subset 
+```{r}
+sub <- genes[c(1:5, 55:60), c(1:5, 20:35, 55:60)]
+```
+con subset 1 (COPIAR G1)
+```{r}
+pheatmap(sub, frontsize = 6, cluster_rows = T, cluster_cols = T,annotation_row = annotation_row, annotation_col = annotation_col, treeheight_row = 0,treeheight_col = 0, main = "expresion genetica")
+```
+con subset 2 -- DESPLEGAR VALORES
+```{r}
+pheatmap(sub, frontsize = 6, cluster_rows = T, cluster_cols = T,annotation_row = annotation_row, annotation_col = annotation_col, treeheight_row = 0,treeheight_col = 0, main = "expresion genetica", fontsize = 8, annotation_legend = FALSE, display_numbers = TRUE, fontsize_number = 6)
+```
+viridis, magma, plasma, cividis, inferno
+```{r}
+library(viridis)
+```
+con color
+```{r}
+pheatmap(sub, frontsize = 6, cluster_rows = T, cluster_cols = T,annotation_row = annotation_row, annotation_col = annotation_col, treeheight_row = 0,treeheight_col = 0, main = "expresion genetica", fontsize = 8, annotation_legend = FALSE, display_numbers = TRUE, fontsize_number = 6,col = viridis_pal(option = "viridis")(6))
+```
+elementos adicionales 
+```{r}
+dist(sub)
+pheatmap(cor(sub))
+trans <- t(sub)
+pheatmap(cor(trans))
+```
+Crear cuaderno de R Markdown
